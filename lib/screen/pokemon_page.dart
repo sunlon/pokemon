@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pokemon/blocs/pokemon/pokemon_bloc.dart';
 
-import '../bloc/pokemon_bloc.dart';
 import '../models/pokemon_model.dart';
 import '../pages/pokemon_detail.dart';
 import '../widgets/pokemon_card.dart';
@@ -34,10 +34,10 @@ class _PokemonPageState extends State<PokemonPage> {
                 typeofpokemon: pokemonlist[index].typeofpokemon,
                 isFavorite: pokemonlist[index].favorite,
                 addFavorite: () {
-                  context
-                      .read<PokemonBloc>()
-                      .add(AddFavoritePokemonEvent(pokemonlist[index]));
-                  setState(() {});
+                  context.read<PokemonBloc>().add(AddFavoritePokemonEvent(
+                      pokemonlist[index].copyWith(
+                          favorite:
+                              pokemonlist[index].favorite! ? false : true)));
                 },
                 onTap: () {
                   Navigator.push(

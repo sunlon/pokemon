@@ -32,18 +32,22 @@ class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
       AddFavoritePokemonEvent event, Emitter<PokemonState> emit) async {
     try {
       final state = this.state;
-      final pokemon = event.pokemons;
+      // final pokemon = event.pokemons;
 
       if (state is PokemonLoadedState) {
         final List<PokemonModel> pokemons = state.pokemons;
-        pokemons.firstWhere((element) => element == pokemon).favorite =
-            pokemon.favorite! ? false : true;
+        // pokemons.firstWhere((element) => element == pokemon).favorite =
+        //     pokemon.favorite! ? false : true;
+
+        List<PokemonModel> pokemon = (state.pokemons.map((pokemon) {
+          return pokemon.id == event.pokemons.id ? event.pokemons : pokemon;
+        })).toList();
         //  ..remove(pokemon);
         //  pokemon.favorite == false
         //    ? pokemons.add(pokemon.)
         //  : pokemons.add(pokemon);
         //    emit(FilterPokemonState(state.pokemons, true));
-        emit(PokemonLoadedState(state.pokemons));
+        emit(PokemonLoadedState(pokemon));
       }
     } catch (e) {
       //  print("somethign wrong ${stack.toString()}");

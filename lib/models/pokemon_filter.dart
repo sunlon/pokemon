@@ -1,0 +1,1 @@
+enum PokemonFilter { all, favorite }

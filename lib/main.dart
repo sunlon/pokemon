@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pokemon/bloc/pokemon_bloc.dart';
+import 'package:pokemon/blocs/pokemon/pokemon_bloc.dart';
+import 'package:pokemon/blocs/pokemon_filter/pokemon_filter_bloc.dart';
+
 import 'package:pokemon/pages/splash.dart';
 import 'package:pokemon/resources/pokemon_repository.dart';
 
@@ -19,28 +21,36 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      // theme: ThemeData(
-      //   primarySwatch: Colors.blue,
-      // ),
-      theme: ThemeData(
-        brightness: Brightness.light,
-        /* light theme settings */
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        /* dark theme settings */
-      ),
-      themeMode: ThemeMode.light,
-      home: RepositoryProvider(
-        create: (context) => PokemonRepository(),
-        child: BlocProvider(
-          create: (context) => PokemonBloc(
-            RepositoryProvider.of<PokemonRepository>(context),
-          )..add(LoadPokemonEvent()),
-          child: BlocBuilder<PokemonBloc, PokemonState>(
+    return RepositoryProvider(
+      create: (context) => PokemonRepository(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => PokemonBloc(
+              RepositoryProvider.of<PokemonRepository>(context),
+            )..add(LoadPokemonEvent()),
+          ),
+          BlocProvider(
+            create: (context) => PokemonFilterBloc(
+                pokemonBloc: BlocProvider.of<PokemonBloc>(context)),
+          )
+        ],
+        child: MaterialApp(
+          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
+          // theme: ThemeData(
+          //   primarySwatch: Colors.blue,
+          // ),
+          theme: ThemeData(
+            brightness: Brightness.light,
+            /* light theme settings */
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            /* dark theme settings */
+          ),
+          themeMode: ThemeMode.light,
+          home: BlocBuilder<PokemonBloc, PokemonState>(
             builder: (context, state) {
               if (state is PokemonLoadingState) {
                 return const SplashScreen();

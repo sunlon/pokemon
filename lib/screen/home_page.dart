@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pokemon/blocs/pokemon_filter/pokemon_filter_bloc.dart';
+import 'package:pokemon/models/pokemon_filter.dart';
 import 'package:pokemon/screen/favorite_page.dart';
 import 'package:pokemon/screen/pokemon_page.dart';
 
@@ -22,6 +25,10 @@ class _HomeState extends State<Home> {
     ];
 
     void onTap(int index) {
+      if (index == 1) {
+        BlocProvider.of<PokemonFilterBloc>(context)
+            .add(UpdatePokemon(pokemonFilter: PokemonFilter.favorite));
+      }
       setState(() {
         currentIndex = index;
       });
@@ -38,7 +45,7 @@ class _HomeState extends State<Home> {
         showSelectedLabels: false,
         showUnselectedLabels: false,
         elevation: 0,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: "Home",
